@@ -1,0 +1,35 @@
+# Development requirements for AskYourDocs
+# Install with: pip install -r requirements-dev.txt
+
+# Include production requirements
+-r requirements.txt
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-mock>=3.12.0
+pytest-asyncio>=0.21.0
+
+# Code quality
+black>=23.11.0
+ruff>=0.1.6
+mypy>=1.7.0
+pre-commit>=3.5.0
+
+# Type stubs
+types-pyyaml>=6.0.12
+types-requests>=2.31.0
+
+# Documentation
+mkdocs>=1.5.0
+mkdocs-material>=9.0.0
+mkdocs-click>=0.8.0
+
+# Optional extras for full development
+llama-index-llms-openai>=0.1.0
+llama-index-llms-anthropic>=0.1.0
+llama-index-embeddings-openai>=0.1.0
+openai>=1.0.0
+anthropic>=0.8.0
+torch>=2.1.0
+transformers>=4.35.0

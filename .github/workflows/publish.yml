@@ -1,0 +1,203 @@
+#name: Publish to PyPI
+#
+#on:
+#  release:
+#    types: [published]
+#  workflow_dispatch:
+#    inputs:
+#      version:
+#        description: 'Version to publish (e.g., 1.0.0)'
+#        required: true
+#        type: string
+#      environment:
+#        description: 'Environment to publish to'
+#        required: true
+#        default: 'pypi'
+#        type: choice
+#        options:
+#        - pypi
+#        - testpypi
+#
+#jobs:
+#  test:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        python-version: ["3.9", "3.10", "3.11", "3.12"]
+#
+#    steps:
+#    - uses: actions/checkout@v4
+#
+#    - name: Set up Python ${{ matrix.python-version }}
+#      uses: actions/setup-python@v4
+#      with:
+#        python-version: ${{ matrix.python-version }}
+#
+#    - name: Install Poetry
+#      uses: snok/install-poetry@v1
+#      with:
+#        version: latest
+#        virtualenvs-create: true
+#        virtualenvs-in-project: true
+#
+#    - name: Load cached venv
+#      id: cached-poetry-dependencies
+#      uses: actions/cache@v3
+#      with:
+#        path: .venv
+#        key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+#
+#    - name: Install dependencies
+#      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+#      run: poetry install --no-interaction --no-root --extras "all"
+#
+#    - name: Install project
+#      run: poetry install --no-interaction --extras "all"
+#
+#    - name: Run tests
+#      run: |
+#        poetry run pytest --cov=askyourdocs --cov-report=xml
+#
+#    - name: Run linting
+#      run: |
+#        poetry run ruff check src/ tests/
+#        poetry run black --check src/ tests/
+#
+#    - name: Run type checking
+#      run: poetry run mypy src/
+#
+#    - name: Run security checks
+#      run: poetry run bandit -r src/
+#
+#  publish:
+#    needs: test
+#    runs-on: ubuntu-latest
+#    environment: ${{ github.event.inputs.environment || 'pypi' }}
+#
+#    steps:
+#    - uses: actions/checkout@v4
+#      with:
+#        fetch-depth: 0
+#
+#    - name: Set up Python
+#      uses: actions/setup-python@v4
+#      with:
+#        python-version: "3.11"
+#
+#    - name: Install Poetry
+#      uses: snok/install-poetry@v1
+#      with:
+#        version: latest
+#        virtualenvs-create: true
+#        virtualenvs-in-project: true
+#
+#    - name: Update version (if manual dispatch)
+#      if: github.event_name == 'workflow_dispatch'
+#      run: poetry version ${{ github.event.inputs.version }}
+#
+#    - name: Get version
+#      id: version
+#      run: echo "version=$(poetry version -s)" >> $GITHUB_OUTPUT
+#
+#    - name: Build package
+#      run: poetry build
+#
+#    - name: Check package
+#      run: |
+#        poetry run twine check dist/*
+#        ls -la dist/
+#
+#    - name: Publish to TestPyPI (if testpypi or testing)
+#      if: github.event.inputs.environment == 'testpypi' || contains(steps.version.outputs.version, 'dev') || contains(steps.version.outputs.version, 'rc')
+#      env:
+#        POETRY_PYPI_TOKEN_TESTPYPI: ${{ secrets.TESTPYPI_API_TOKEN }}
+#      run: |
+#        poetry config repositories.testpypi https://test.pypi.org/legacy/
+#        poetry publish -r testpypi
+#
+#    - name: Test installation from TestPyPI
+#      if: github.event.inputs.environment == 'testpypi' || contains(steps.version.outputs.version, 'dev') || contains(steps.version.outputs.version, 'rc')
+#      run: |
+#        sleep 60  # Wait for package to be available
+#        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ askyourdocs==${{ steps.version.outputs.version }}
+#        askyourdocs --version
+#        askyourdocs --help
+#
+#    - name: Publish to PyPI
+#      if: github.event.inputs.environment == 'pypi' || github.event_name == 'release'
+#      env:
+#        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
+#      run: poetry publish
+#
+#    - name: Create GitHub Release Assets
+#      if: github.event_name == 'release'
+#      uses: softprops/action-gh-release@v1
+#      with:
+#        files: |
+#          dist/*.whl
+#          dist/*.tar.gz
+#        body: |
+#          ## AskYourDocs v${{ steps.version.outputs.version }}
+#
+#          ### Installation
+#          ```bash
+#          pip install askyourdocs==${{ steps.version.outputs.version }}
+#          ```
+#
+#          ### Quick Start
+#          ```bash
+#          # Install Ollama and download model
+#          ollama serve
+#          ollama pull tinyllama:1.1b
+#
+#          # Index your documents
+#          askyourdocs ingest ./documents
+#
+#          # Ask questions
+#          askyourdocs ask "What are the main topics?"
+#          ```
+#
+#          See the [README](https://github.com/askyourdocs/askyourdocs#readme) for full documentation.
+#
+#    - name: Announce on GitHub Discussions
+#      if: github.event_name == 'release'
+#      uses: actions/github-script@v6
+#      with:
+#        script: |
+#          github.rest.teams.addOrUpdateRepoPermissionsInOrg({
+#            org: context.repo.owner,
+#            team_slug: 'maintainers',
+#            owner: context.repo.owner,
+#            repo: context.repo.repo,
+#            permission: 'admin'
+#          });
+#
+#    - name: Update package managers
+#      if: github.event_name == 'release'
+#      run: |
+#        echo "Package published to PyPI: https://pypi.org/project/askyourdocs/${{ steps.version.outputs.version }}/"
+#        echo "Consider updating:"
+#        echo "- Homebrew formula"
+#        echo "- Conda package"
+#        echo "- Docker image"
+#        echo "- Documentation"
+#
+#  notify:
+#    needs: publish
+#    runs-on: ubuntu-latest
+#    if: always()
+#
+#    steps:
+#    - name: Notify success
+#      if: needs.publish.result == 'success'
+#      run: |
+#        echo "✅ Successfully published AskYourDocs to PyPI!"
+#        echo "📦 Package: https://pypi.org/project/askyourdocs/"
+#        echo "📖 Documentation: https://docs.askyourdocs.dev"
+#
+#    - name: Notify failure
+#      if: needs.publish.result == 'failure'
+#      run: |
+#        echo "❌ Failed to publish AskYourDocs to PyPI"
+#        echo "Check the logs above for details"
+#        exit 1
