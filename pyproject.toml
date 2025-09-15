@@ -2,12 +2,12 @@
 name = "askyourdocs"
 version = "1.0.0"
 description = "Privacy-first, local-only CLI tool that transforms document collections into an intelligent Q&A system"
-authors = ["AskYourDocs Team <hello@askyourdocs.dev>"]
+authors = ["Lincoln Simba <lincolncmba@gmail.com>"]
 readme = "README.md"
 license = "MIT"
 homepage = "https://github.com/askyourdocs/askyourdocs"
 repository = "https://github.com/askyourdocs/askyourdocs"
-documentation = "https://docs.askyourdocs.dev"
+documentation = "https://github.com/lincmba/askyourdocs/blob/main/README.md"
 keywords = ["rag", "ai", "llm", "documents", "question-answering", "search", "privacy", "local", "cli", "llamaindex"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
