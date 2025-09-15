@@ -39,7 +39,7 @@ pip install askyourdocs[all]
 #### Option 2: Install with Poetry (Development)
 ```bash
 # Clone the repository
-git clone https://github.com/askyourdocs/askyourdocs.git
+git clone https://github.com/lincmba/askyourdocs.git
 cd askyourdocs
 
 # Install Poetry if you haven't already
@@ -58,7 +58,7 @@ poetry run askyourdocs --help
 #### Option 3: Install from Source (Advanced)
 ```bash
 # Clone the repository
-git clone https://github.com/askyourdocs/askyourdocs.git
+git clone https://github.com/lincmba/askyourdocs.git
 cd askyourdocs
 
 # Create virtual environment
@@ -684,7 +684,7 @@ askyourdocs status
 
 ```bash
 # Clone repository
-git clone https://github.com/askyourdocs/askyourdocs.git
+git clone https://github.com/lincmba/askyourdocs.git
 cd askyourdocs
 
 # Install Poetry
@@ -693,8 +693,8 @@ curl -sSL https://install.python-poetry.org | python3 -
 # Install dependencies
 poetry install --extras "all"
 
-# Activate environment
-poetry shell
+# Run a basic command
+ poetry run askyourdocs --help
 
 # Install pre-commit hooks
 pre-commit install
@@ -704,7 +704,7 @@ pre-commit install
 
 ```bash
 # Clone repository
-git clone https://github.com/askyourdocs/askyourdocs.git
+git clone https://github.com/lincmba/askyourdocs.git
 cd askyourdocs
 
 # Create virtual environment
