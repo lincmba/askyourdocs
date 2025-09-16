@@ -9,8 +9,9 @@ import hashlib
 import shutil
 import tarfile
 import tempfile
+import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set
 
 import chromadb
 from chromadb.config import Settings as ChromaSettings
@@ -32,6 +33,9 @@ class VectorStoreManager:
         self.config = config
         self.storage_path = self._resolve_storage_path()
         self.collection_name = config.storage.collection_name
+
+        # Track ingested paths
+        self.paths_file = self.storage_path / "ingested_paths.json"
 
         self._chroma_client: Optional[chromadb.PersistentClient] = None
         self._vector_store: Optional[ChromaVectorStore] = None
@@ -76,7 +80,8 @@ class VectorStoreManager:
             )
 
             self._chroma_client = chromadb.PersistentClient(
-                path=str(self.storage_path), settings=settings
+                path=str(self.storage_path),
+                settings=settings
             )
 
         return self._chroma_client
@@ -91,7 +96,7 @@ class VectorStoreManager:
             except Exception:
                 collection = chroma_client.create_collection(
                     name=self.collection_name,
-                    metadata={"description": "AskYourDocs document collection"},
+                    metadata={"description": "AskYourDocs document collection"}
                 )
 
             self._vector_store = ChromaVectorStore(chroma_collection=collection)
@@ -109,7 +114,8 @@ class VectorStoreManager:
                 return None
 
             self._index = VectorStoreIndex.from_vector_store(
-                vector_store=vector_store, storage_context=storage_context
+                vector_store=vector_store,
+                storage_context=storage_context
             )
 
             return self._index
@@ -124,11 +130,47 @@ class VectorStoreManager:
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
         self._index = VectorStoreIndex.from_documents(
-            documents=documents, storage_context=storage_context, show_progress=True
+            documents=documents,
+            storage_context=storage_context,
+            show_progress=True
         )
 
         logger.info(f"Created index with {len(documents)} documents")
         return self._index
+
+    def add_ingested_path(self, path: Path) -> None:
+        """Add path to ingested paths tracking."""
+        try:
+            ingested_paths = self.get_ingested_paths()
+            ingested_paths.add(str(path.resolve()))
+
+            self.storage_path.mkdir(parents=True, exist_ok=True)
+            with open(self.paths_file, "w") as f:
+                json.dump(list(ingested_paths), f, indent=2)
+
+        except Exception as e:
+            logger.warning(f"Failed to track ingested path: {e}")
+
+    def get_ingested_paths(self) -> Set[str]:
+        """Get set of ingested paths."""
+        try:
+            if self.paths_file.exists():
+                with open(self.paths_file, "r") as f:
+                    return set(json.load(f))
+        except Exception as e:
+            logger.warning(f"Failed to load ingested paths: {e}")
+        return set()
+
+    def is_path_ingested(self, path: Path) -> bool:
+        """Check if path has been ingested."""
+        ingested_paths = self.get_ingested_paths()
+        path_str = str(path.resolve())
+
+        # Check exact match or if path is parent of ingested paths
+        for ingested_path in ingested_paths:
+            if path_str == ingested_path or path_str in ingested_path:
+                return True
+        return False
 
     def add_documents(self, documents: List[Any]) -> None:
         """Add documents to existing index."""
@@ -276,9 +318,7 @@ class VectorStoreManager:
                         if self.storage_path.exists():
                             shutil.rmtree(self.storage_path)
 
-                    shutil.copytree(
-                        vector_store_path, self.storage_path, dirs_exist_ok=merge
-                    )
+                    shutil.copytree(vector_store_path, self.storage_path, dirs_exist_ok=merge)
 
                 # Import configuration if present
                 config_path = temp_path / "config.yaml"
@@ -315,7 +355,10 @@ class VectorStoreManager:
             collection = self._get_chroma_client().get_collection(self.collection_name)
 
             # Query by metadata hash
-            results = collection.get(where={"document_hash": doc_hash}, limit=1)
+            results = collection.get(
+                where={"document_hash": doc_hash},
+                limit=1
+            )
 
             return len(results.get("ids", [])) > 0
 
