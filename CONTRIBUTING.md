@@ -80,10 +80,10 @@ poetry run pytest --cov=askyourdocs
 poetry run pytest --cov=askyourdocs --cov-report=html
 
 # Run specific test file
-pytest tests/test_config.py
+poetry run pytest tests/test_config.py
 
 # Run tests with verbose output
-pytest -v
+poetry run pytest -v
 ```
 
 ### Writing Tests
@@ -93,22 +93,6 @@ pytest -v
 - Use meaningful test names that describe the behavior
 - Mock external dependencies (Ollama, file system when appropriate)
 - Include both positive and negative test cases
-
-Example test structure:
-```python
-class TestNewFeature:
-    """Test new feature functionality."""
-    
-    def test_valid_input(self):
-        """Test behavior with valid input."""
-        # Test implementation
-        pass
-    
-    def test_invalid_input(self):
-        """Test error handling with invalid input."""
-        # Test implementation
-        pass
-```
 
 ## 📝 Code Style
 
@@ -177,20 +161,6 @@ The pre-commit configuration automatically runs:
    poetry run pre-commit run --all-files
    ```
 
-### Commit Message Format
-
-We follow conventional commits format:
-
-- `feat:` new features
-- `fix:` bug fixes
-- `docs:` documentation changes
-- `style:` formatting changes
-- `refactor:` code refactoring
-- `test:` adding tests
-- `chore:` maintenance tasks
-
-Example: `feat: add support for Excel file ingestion`
-
 ### Code Review Process
 
 All contributions go through code review:
@@ -253,31 +223,11 @@ For new features, please:
 - **Configuration examples** for different use cases
 - **Performance tuning guides**
 
-## 🔒 Security
-
-### Reporting Security Issues
-
-Please DO NOT file public issues for security vulnerabilities. Instead:
-
-1. Email security@askyourdocs.dev
-2. Include detailed information about the vulnerability
-3. Provide steps to reproduce if possible
-4. Allow time for patch development before public disclosure
-
-### Security Guidelines
-
-- Never commit API keys or sensitive data
-- Validate all user inputs
-- Use safe file handling practices
-- Follow principle of least privilege
-- Keep dependencies updated
 
 ## 📞 Getting Help
 
 - **Documentation**: Check the README and docs first
-- **Discussions**: Use GitHub Discussions for questions
 - **Issues**: File issues for bugs and feature requests
-- **Discord**: Join our community Discord (link in README)
 
 ## 🎯 Development Tips
 
@@ -318,15 +268,5 @@ Please DO NOT file public issues for security vulnerabilities. Instead:
 - Optimize embedding batch processing
 - Consider lazy loading for large indices
 - Test startup time optimization
-
-## 📈 Release Process
-
-1. **Version bump** in `pyproject.toml` and `__init__.py`
-2. **Update CHANGELOG.md** with new features/fixes
-3. **Run quality checks**: `poetry run pre-commit run --all-files`
-4. **Build package**: `poetry build`
-3. **Tag release** with semantic version
-5. **Automated PyPI deployment** via GitHub Actions
-5. **Update documentation** if needed
 
 Thank you for contributing to AskYourDocs! 🙏
