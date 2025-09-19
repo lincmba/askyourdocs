@@ -14,13 +14,7 @@ from llama_index.core.node_parser import SentenceSplitter
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.embeddings.openai import OpenAIEmbedding
 from rich.console import Console
-from rich.progress import (
-    Progress,
-    SpinnerColumn,
-    TextColumn,
-    BarColumn,
-    TaskProgressColumn,
-)
+from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
@@ -36,7 +30,7 @@ logger = get_logger(__name__)
 class DocumentChangeHandler(FileSystemEventHandler):
     """Handle file system events for automatic ingestion."""
 
-    def __init__(self, ingestor: "DocumentIngestor") -> None:
+    def __init__(self, ingestor: 'DocumentIngestor') -> None:
         self.ingestor = ingestor
         self.debounce_time = 2.0  # seconds
         self.pending_files: Set[Path] = set()
@@ -66,9 +60,7 @@ class DocumentChangeHandler(FileSystemEventHandler):
         current_time = time.time()
         if current_time - self.last_event_time >= self.debounce_time:
             if self.pending_files:
-                console.print(
-                    f"📁 [yellow]Processing {len(self.pending_files)} changed files...[/yellow]"
-                )
+                console.print(f"📁 [yellow]Processing {len(self.pending_files)} changed files...[/yellow]")
                 self.ingestor._process_files(list(self.pending_files))
                 self.pending_files.clear()
 
@@ -87,34 +79,10 @@ class DocumentIngestor:
 
         # Supported file extensions
         self.supported_extensions = {
-            ".pdf",
-            ".docx",
-            ".pptx",
-            ".odt",
-            ".odp",
-            ".rtf",
-            ".txt",
-            ".md",
-            ".rst",
-            ".csv",
-            ".json",
-            ".yaml",
-            ".yml",
-            ".html",
-            ".xml",
-            ".tex",
-            ".py",
-            ".js",
-            ".java",
-            ".cpp",
-            ".c",
-            ".h",
-            ".go",
-            ".rs",
-            ".php",
-            ".rb",
-            ".swift",
-            ".kt",
+            ".pdf", ".docx", ".pptx", ".odt", ".odp", ".rtf",
+            ".txt", ".md", ".rst", ".csv", ".json", ".yaml", ".yml",
+            ".html", ".xml", ".tex", ".py", ".js", ".java", ".cpp",
+            ".c", ".h", ".go", ".rs", ".php", ".rb", ".swift", ".kt"
         }
 
     def _setup_llamaindex(self) -> None:
@@ -175,15 +143,8 @@ class DocumentIngestor:
 
         # Skip common non-document files
         skip_patterns = {
-            "__pycache__",
-            ".git",
-            ".svn",
-            ".hg",
-            "node_modules",
-            ".DS_Store",
-            "Thumbs.db",
-            ".env",
-            ".log",
+            "__pycache__", ".git", ".svn", ".hg", "node_modules",
+            ".DS_Store", "Thumbs.db", ".env", ".log"
         }
 
         for pattern in skip_patterns:
@@ -196,7 +157,7 @@ class DocumentIngestor:
         self,
         files: List[Path],
         include_patterns: Optional[List[str]] = None,
-        exclude_patterns: Optional[List[str]] = None,
+        exclude_patterns: Optional[List[str]] = None
     ) -> List[Path]:
         """Filter files based on include/exclude patterns."""
         filtered_files = []
@@ -256,16 +217,14 @@ class DocumentIngestor:
 
             # Use first document and enrich metadata
             doc = documents[0]
-            doc.metadata.update(
-                {
-                    "file_path": str(file_path),
-                    "file_name": file_path.name,
-                    "file_size": file_path.stat().st_size,
-                    "file_type": file_path.suffix.lower(),
-                    "document_hash": self.storage_manager.get_document_hash(file_path),
-                    "ingestion_time": time.time(),
-                }
-            )
+            doc.metadata.update({
+                "file_path": str(file_path),
+                "file_name": file_path.name,
+                "file_size": file_path.stat().st_size,
+                "file_type": file_path.suffix.lower(),
+                "document_hash": self.storage_manager.get_document_hash(file_path),
+                "ingestion_time": time.time(),
+            })
 
             return doc
 
@@ -282,7 +241,7 @@ class DocumentIngestor:
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
             TaskProgressColumn(),
-            console=console,
+            console=console
         ) as progress:
 
             task = progress.add_task("Processing documents...", total=len(file_paths))
@@ -304,7 +263,7 @@ class DocumentIngestor:
         path: Path,
         include_patterns: Optional[List[str]] = None,
         exclude_patterns: Optional[List[str]] = None,
-        force_rebuild: bool = False,
+        force_rebuild: bool = False
     ) -> None:
         """Ingest documents from a directory or single file."""
         if not path.exists():
@@ -316,9 +275,7 @@ class DocumentIngestor:
                 console.print(f"📄 [bold]Processing single file:[/bold] {path}")
                 files_to_process = [path]
             else:
-                console.print(
-                    f"⚠️  [yellow]File type not supported: {path.suffix}[/yellow]"
-                )
+                console.print(f"⚠️  [yellow]File type not supported: {path.suffix}[/yellow]")
                 return
         else:
             # Handle directory
@@ -326,9 +283,7 @@ class DocumentIngestor:
 
             # Discover files
             all_files = self._discover_files(path)
-            files_to_process = self._filter_files(
-                all_files, include_patterns, exclude_patterns
-            )
+            files_to_process = self._filter_files(all_files, include_patterns, exclude_patterns)
 
         if not files_to_process:
             console.print("⚠️  [yellow]No supported documents found[/yellow]")
@@ -348,17 +303,13 @@ class DocumentIngestor:
                 console.print("✅ [green]All documents are already indexed[/green]")
                 return
 
-        console.print(
-            f"⚡ Processing {len(files_to_process)} {'new ' if not force_rebuild else ''}documents"
-        )
+        console.print(f"⚡ Processing {len(files_to_process)} {'new ' if not force_rebuild else ''}documents")
 
         # Process documents
         documents = self._process_files(files_to_process)
 
         if not documents:
-            console.print(
-                "⚠️  [yellow]No documents were successfully processed[/yellow]"
-            )
+            console.print("⚠️  [yellow]No documents were successfully processed[/yellow]")
             return
 
         # Create or update index
@@ -376,9 +327,10 @@ class DocumentIngestor:
 
                 self.storage_manager.create_index(documents)
 
-        console.print(
-            f"🎉 [bold green]Successfully indexed {len(documents)} documents![/bold green]"
-        )
+        # Track ingested path
+        self.storage_manager.add_ingested_path(path)
+
+        console.print(f"🎉 [bold green]Successfully indexed {len(documents)} documents![/bold green]")
 
     def refresh_index(self) -> None:
         """Refresh index with incremental updates."""
@@ -390,15 +342,13 @@ class DocumentIngestor:
         # 4. Update index efficiently
 
         console.print("🔄 [blue]Incremental refresh not yet implemented[/blue]")
-        console.print(
-            "💡 Use [bold]askyourdocs ingest --force[/bold] to rebuild the index"
-        )
+        console.print("💡 Use [bold]askyourdocs ingest --force[/bold] to rebuild the index")
 
     def watch_directory(
         self,
         directory: Path,
         include_patterns: Optional[str] = None,
-        exclude_patterns: Optional[str] = None,
+        exclude_patterns: Optional[str] = None
     ) -> None:
         """Watch directory for changes and auto-ingest."""
         if not directory.exists():
