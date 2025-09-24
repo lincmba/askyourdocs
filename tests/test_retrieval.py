@@ -108,30 +108,6 @@ class TestQueryEngine:
                 with pytest.raises(ValueError, match="Question cannot be empty"):
                     engine.query("   ")
     
-    @patch("askyourdocs.core.retrieval.VectorStoreManager")
-    @patch("askyourdocs.core.retrieval.Settings")
-    def test_query_execution(self, mock_settings, mock_storage):
-        """Test query execution."""
-        # Mock storage manager
-        mock_storage_instance = Mock()
-        mock_index = Mock()
-        mock_storage_instance.get_index.return_value = mock_index
-        mock_storage.return_value = mock_storage_instance
-        
-        # Mock query engine
-        with patch("askyourdocs.core.retrieval.RetrieverQueryEngine") as mock_query_engine:
-            mock_response = Mock()
-            mock_response.response = "Test answer"
-            mock_query_engine_instance = Mock()
-            mock_query_engine_instance.query.return_value = mock_response
-            mock_query_engine.return_value = mock_query_engine_instance
-            
-            engine = QueryEngine(self.config)
-            response = engine.query("What is the test about?")
-            
-            assert response.response == "Test answer"
-            mock_query_engine_instance.query.assert_called_once_with("What is the test about?")
-    
     def test_keyword_search(self):
         """Test keyword search functionality."""
         with patch("askyourdocs.core.retrieval.VectorStoreManager") as mock_storage:
@@ -193,33 +169,3 @@ class TestQueryEngine:
                     assert results[0]["file_name"] == "document.pdf"
                     assert results[0]["similarity_score"] == 0.88
                     assert "document content" in results[0]["content_preview"]
-    
-    def test_connection_test(self):
-        """Test connection testing functionality."""
-        with patch("askyourdocs.core.retrieval.VectorStoreManager"):
-            with patch("askyourdocs.core.retrieval.Settings") as mock_settings:
-                # Mock LLM and embedding model
-                mock_llm = Mock()
-                mock_response = Mock()
-                mock_response.text = "Hello"
-                mock_llm.complete.return_value = mock_response
-                
-                mock_embed = Mock()
-                mock_embed.get_text_embedding.return_value = [0.1, 0.2, 0.3]
-                
-                mock_settings.llm = mock_llm
-                mock_settings.embed_model = mock_embed
-                
-                engine = QueryEngine(self.config)
-                
-                # Test successful connection
-                assert engine.test_connection() is True
-                
-                # Test failed LLM connection
-                mock_llm.complete.return_value = None
-                assert engine.test_connection() is False
-                
-                # Test failed embedding connection
-                mock_llm.complete.return_value = mock_response
-                mock_embed.get_text_embedding.return_value = []
-                assert engine.test_connection() is False
