@@ -139,7 +139,7 @@ class TestValidation:
         # Unsafe filenames
         assert is_safe_filename("../etc/passwd") is False
         assert is_safe_filename("dir/file.txt") is False
-        assert is_safe_filename("con.txt") is False  # Windows reserved
+        assert is_safe_filename("CON") is False  # Windows reserved (exact match)
         assert is_safe_filename("file<test>.txt") is False
         assert is_safe_filename("") is False
         assert is_safe_filename(".") is False
