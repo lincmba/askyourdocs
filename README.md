@@ -491,6 +491,28 @@ askyourdocs ingest ./legal --include "*.pdf,*.docx"
 askyourdocs ask "What are the termination clauses?"
 askyourdocs ask "What payment terms are specified?"
 askyourdocs ask "Are there any liability limitations?"
+
+# Query specific contract types
+askyourdocs ask "What are the key terms?" --path ./employment-contracts
+askyourdocs ask "What are the renewal conditions in ./service-agreements?"
+```
+
+### Path-Specific Querying
+
+AskYourDocs supports querying specific paths, with automatic ingestion if needed:
+
+```bash
+# Method 1: Using --path option
+askyourdocs ask "What are the main topics?" --path ./research-papers
+
+# Method 2: Include path in question
+askyourdocs ask "What are the key findings in ./data-analysis?"
+
+# Auto-ingestion: If path isn't indexed, it will be ingested automatically
+askyourdocs ask "Summarize the content" --path ./new-documents
+
+# Multiple path queries
+askyourdocs ask "Compare findings in ./study-a vs ./study-b"
 ```
 
 ## 🔧 Advanced Usage
@@ -745,27 +767,6 @@ poetry build
 # Install locally for testing
 poetry install
 ```
-
-## 📊 Performance Benchmarks
-
-Typical performance on modern hardware (16GB RAM, SSD):
-
-| Operation | Small (100 docs) | Medium (1K docs) | Large (10K docs) |
-|-----------|------------------|------------------|------------------|
-| **Initial Ingestion** | 30 seconds | 5 minutes | 45 minutes |
-| **Incremental Update** | 2 seconds | 15 seconds | 2 minutes |
-| **Query Response** | 1-2 seconds | 1-3 seconds | 2-4 seconds |
-| **Memory Usage** | 50MB | 150MB | 500MB |
-
-### Model Comparison
-
-| Model | Size | Speed | Quality | Use Case |
-|-------|------|-------|---------|----------|
-| **tinyllama:1.1b** | 637MB | Very Fast | Good | Quick queries, limited resources |
-| **llama3.1:8b** | 4.7GB | Fast | Excellent | General purpose, best balance |
-| **claude-3-5-sonnet** | Remote | Fast | Outstanding | Best reasoning, requires API key |
-| **gpt-3.5-turbo** | Remote | Fast | Excellent | Remote option, requires API key |
-| **gpt-4** | Remote | Medium | Outstanding | Best quality, requires API key |
 
 *Note: Local models require initial download but then work offline. Remote models require internet and API costs.*
 
