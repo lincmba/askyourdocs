@@ -11,21 +11,21 @@ from askyourdocs.core.config import Config, ConfigManager
 
 class TestConfigManager:
     """Test configuration management functionality."""
-    
+
     def test_default_config_creation(self):
         """Test creation of default configuration."""
         with tempfile.TemporaryDirectory() as temp_dir:
             # Mock XDG directories
             config_dir = Path(temp_dir) / "config"
             data_dir = Path(temp_dir) / "data"
-            
+
             manager = ConfigManager()
             manager.config_dir = config_dir
             manager.config_file = config_dir / "config.yaml"
             manager.data_dir = data_dir
-            
+
             config = manager.load_config()
-            
+
             assert isinstance(config, Config)
             assert config.model.provider == "ollama"
             assert config.model.name == "tinyllama:1.1b"
@@ -44,7 +44,6 @@ class TestConfigManager:
         }
         config = Config(**config_data)
         assert config.model.temperature == 0.1
-
 
     def test_config_get_set_value(self):
         """Test getting and setting configuration values."""
@@ -89,11 +88,11 @@ class TestConfig:
         config = Config(model=model_config)
         assert config.model.temperature == 0.5
         assert config.model.name == "claude-3-5-sonnet-20241022"
-        
+
         # Invalid max_tokens (negative)
         with pytest.raises(ValueError):
             Config(model={"max_tokens": -1})
-    
+
     def test_embedding_config_validation(self):
         """Test embedding configuration validation."""
         # Valid config
@@ -102,14 +101,14 @@ class TestConfig:
             "device": "cpu",
             "batch_size": 16,
         }
-        
+
         config = Config(embedding=embedding_config)
         assert config.embedding.device == "cpu"
-        
+
         # Invalid device
         with pytest.raises(ValueError):
             Config(embedding={"device": "invalid"})
-    
+
     def test_chunking_config_validation(self):
         """Test chunking configuration validation."""
         # Valid config
@@ -118,18 +117,18 @@ class TestConfig:
             "chunk_size": 1000,
             "chunk_overlap": 200,
         }
-        
+
         config = Config(chunking=chunking_config)
         assert config.chunking.chunk_overlap == 200
-        
+
         # Invalid strategy
         with pytest.raises(ValueError):
             Config(chunking={"strategy": "invalid"})
-        
+
         # Invalid overlap (too large)
         with pytest.raises(ValueError):
             Config(chunking={"chunk_size": 1000, "chunk_overlap": 1000})
-    
+
     def test_retrieval_config_validation(self):
         """Test retrieval configuration validation."""
         # Valid config
@@ -138,14 +137,14 @@ class TestConfig:
             "similarity_threshold": 0.8,
             "retrieval_mode": "hybrid",
         }
-        
+
         config = Config(retrieval=retrieval_config)
         assert config.retrieval.retrieval_mode == "hybrid"
-        
+
         # Invalid similarity threshold
         with pytest.raises(ValueError):
             Config(retrieval={"similarity_threshold": 1.5})
-        
+
         # Invalid retrieval mode
         with pytest.raises(ValueError):
             Config(retrieval={"retrieval_mode": "invalid"})

@@ -13,7 +13,10 @@ from llama_index.core import Settings
 from llama_index.core.base.response.schema import StreamingResponse
 from llama_index.core.llms import ChatMessage, MessageRole
 from llama_index.core.query_engine import RetrieverQueryEngine
-from llama_index.core.response_synthesizers import ResponseMode, get_response_synthesizer
+from llama_index.core.response_synthesizers import (
+    ResponseMode,
+    get_response_synthesizer,
+)
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.ollama import Ollama
@@ -96,9 +99,15 @@ class QueryEngine:
                     max_tokens=self.config.model.max_tokens,
                 )
             elif self.config.model.provider == "azure":
-                if not self.config.model.api_key or not self.config.model.azure_endpoint:
-                    raise ValueError("Azure OpenAI API key and endpoint required for Azure models")
+                if (
+                    not self.config.model.api_key
+                    or not self.config.model.azure_endpoint
+                ):
+                    raise ValueError(
+                        "Azure OpenAI API key and endpoint required for Azure models"
+                    )
                 from llama_index.llms.azure_openai import AzureOpenAI
+
                 Settings.llm = AzureOpenAI(
                     model=self.config.model.name,
                     api_key=self.config.model.api_key,
@@ -108,7 +117,9 @@ class QueryEngine:
                     max_tokens=self.config.model.max_tokens,
                 )
             else:
-                raise ValueError(f"Unsupported LLM provider: {self.config.model.provider}")
+                raise ValueError(
+                    f"Unsupported LLM provider: {self.config.model.provider}"
+                )
 
             # Configure chunking
             Settings.chunk_size = self.config.chunking.chunk_size
@@ -155,9 +166,9 @@ class QueryEngine:
         """Extract file path from question if specified."""
         # Look for common path patterns in questions
         path_patterns = [
-            r'in\s+([/\w\-_.]+(?:/[/\w\-_.]*)*)',  # "in /path/to/docs"
-            r'from\s+([/\w\-_.]+(?:/[/\w\-_.]*)*)',  # "from ./documents"
-            r'about\s+([/\w\-_.]+(?:/[/\w\-_.]*)*)',  # "about ~/research"
+            r"in\s+([/\w\-_.]+(?:/[/\w\-_.]*)*)",  # "in /path/to/docs"
+            r"from\s+([/\w\-_.]+(?:/[/\w\-_.]*)*)",  # "from ./documents"
+            r"about\s+([/\w\-_.]+(?:/[/\w\-_.]*)*)",  # "about ~/research"
         ]
 
         for pattern in path_patterns:
@@ -165,14 +176,20 @@ class QueryEngine:
             if match:
                 potential_path = match.group(1)
                 # Basic validation - check if it looks like a path
-                if '/' in potential_path or potential_path.startswith('.') or potential_path.startswith('~'):
+                if (
+                    "/" in potential_path
+                    or potential_path.startswith(".")
+                    or potential_path.startswith("~")
+                ):
                     return potential_path
 
         return None
 
     def _filter_by_path(self, question: str, path_filter: str) -> str:
         """Add path filtering to the query context."""
-        return f"Answer based only on documents from the path '{path_filter}': {question}"
+        return (
+            f"Answer based only on documents from the path '{path_filter}': {question}"
+        )
 
     def query(self, question: str) -> Any:
         """Execute query and return response."""
@@ -185,25 +202,37 @@ class QueryEngine:
 
             if specified_path:
                 from pathlib import Path
+
                 path_obj = Path(specified_path).expanduser().resolve()
 
                 # Check if path is ingested
                 if not self.storage_manager.is_path_ingested(path_obj):
                     # Auto-ingest the path
-                    console.print(f"📁 [yellow]Path '{specified_path}' not found in index. Ingesting...[/yellow]")
+                    console.print(
+                        f"📁 [yellow]Path '{specified_path}' not found in index. Ingesting...[/yellow]"
+                    )
 
                     from .ingestion import DocumentIngestor
+
                     ingestor = DocumentIngestor(self.config)
 
                     if path_obj.exists():
                         ingestor.ingest_directory(path_obj)
-                        console.print(f"✅ [green]Path '{specified_path}' ingested successfully[/green]")
+                        console.print(
+                            f"✅ [green]Path '{specified_path}' ingested successfully[/green]"
+                        )
                     else:
-                        console.print(f"❌ [red]Path '{specified_path}' does not exist[/red]")
-                        return type('Response', (), {
-                            'response': f"I cannot find the specified path '{specified_path}'. Please check the path and try again.",
-                            'source_nodes': []
-                        })()
+                        console.print(
+                            f"❌ [red]Path '{specified_path}' does not exist[/red]"
+                        )
+                        return type(
+                            "Response",
+                            (),
+                            {
+                                "response": f"I cannot find the specified path '{specified_path}'. Please check the path and try again.",
+                                "source_nodes": [],
+                            },
+                        )()
 
                 # Filter question to focus on specified path
                 question = self._filter_by_path(question, specified_path)
@@ -292,12 +321,14 @@ class QueryEngine:
 
             results = []
             for node in nodes:
-                results.append({
-                    "file": node.metadata.get("file_path", "Unknown"),
-                    "score": getattr(node, "score", 0.0),
-                    "preview": node.text[:200].replace("\n", " ") + "...",
-                    "metadata": node.metadata,
-                })
+                results.append(
+                    {
+                        "file": node.metadata.get("file_path", "Unknown"),
+                        "score": getattr(node, "score", 0.0),
+                        "preview": node.text[:200].replace("\n", " ") + "...",
+                        "metadata": node.metadata,
+                    }
+                )
 
             return results
 
@@ -321,13 +352,15 @@ class QueryEngine:
 
             results = []
             for node in nodes:
-                results.append({
-                    "file_path": node.metadata.get("file_path", "Unknown"),
-                    "file_name": node.metadata.get("file_name", "Unknown"),
-                    "similarity_score": getattr(node, "score", 0.0),
-                    "content_preview": node.text[:300],
-                    "metadata": node.metadata,
-                })
+                results.append(
+                    {
+                        "file_path": node.metadata.get("file_path", "Unknown"),
+                        "file_name": node.metadata.get("file_name", "Unknown"),
+                        "similarity_score": getattr(node, "score", 0.0),
+                        "content_preview": node.text[:300],
+                        "metadata": node.metadata,
+                    }
+                )
 
             return results
 
@@ -340,14 +373,14 @@ class QueryEngine:
         try:
             # Test LLM connection
             llm = Settings.llm
-            if hasattr(llm, 'complete'):
+            if hasattr(llm, "complete"):
                 test_response = llm.complete("Hello")
                 if not test_response or not test_response.text:
                     return False
 
             # Test embedding model
             embed_model = Settings.embed_model
-            if hasattr(embed_model, 'get_text_embedding'):
+            if hasattr(embed_model, "get_text_embedding"):
                 test_embedding = embed_model.get_text_embedding("test")
                 if not test_embedding or len(test_embedding) == 0:
                     return False
