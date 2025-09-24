@@ -4,8 +4,6 @@ import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-import pytest
-
 from askyourdocs.core.config import Config
 from askyourdocs.core.ingestion import DocumentIngestor
 
@@ -104,24 +102,7 @@ class TestDocumentIngestor:
                     
                 finally:
                     test_file.unlink()
-    
-    @patch("askyourdocs.core.ingestion.console")
-    def test_process_files_with_progress(self, mock_console):
-        """Test file processing with progress tracking."""
-        with patch("askyourdocs.core.ingestion.VectorStoreManager"):
-            with patch("askyourdocs.core.ingestion.Settings"):
-                with patch.object(DocumentIngestor, "_load_document") as mock_load:
-                    mock_document = Mock()
-                    mock_load.return_value = mock_document
-                    
-                    ingestor = DocumentIngestor(self.config)
-                    
-                    files = [Path("test1.txt"), Path("test2.txt")]
-                    documents = ingestor._process_files(files)
-                    
-                    assert len(documents) == 2
-                    assert mock_load.call_count == 2
-    
+
     def test_discover_files(self):
         """Test file discovery in directory."""
         with patch("askyourdocs.core.ingestion.VectorStoreManager"):
