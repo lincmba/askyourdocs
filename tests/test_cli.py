@@ -9,17 +9,17 @@ from askyourdocs.main import cli
 
 class TestCLI:
     """Test CLI commands."""
-    
+
     def setup_method(self):
         """Set up test environment."""
         self.runner = CliRunner()
-    
+
     def test_version_command(self):
         """Test version display."""
         result = self.runner.invoke(cli, ["--version"])
         assert result.exit_code == 0
         assert "AskYourDocs v" in result.output
-    
+
     def test_help_command(self):
         """Test help display."""
         result = self.runner.invoke(cli, ["--help"])
