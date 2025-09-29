@@ -118,33 +118,26 @@ askyourdocs config setup --provider openai
 
 **Anthropic Setup:**
 ```bash
-# Install with Anthropic support
-pip install askyourdocs[remote]
 # 1. Install with remote provider support
 pip install askyourdocs[remote]
+
+# 2. Get your API key from https://console.anthropic.com/settings/keys
 export ANTHROPIC_API_KEY="your-api-key-here"
-# 2. Get your API key from https://console.anthropic.com/
-# Configure for Anthropic
 
-# 3. Configure for Anthropic
+# 3. Configure for Anthropic (recommended)
 askyourdocs config setup --provider anthropic
-
-# Or set directly in config
-askyourdocs config set model.provider anthropic
-askyourdocs config set model.name claude-3-sonnet-20240229
-askyourdocs config set model.api_key your-api-key-here
 ```
 
 **Azure OpenAI Setup:**
 ```bash
-# Install with Azure support
-pip install askyourdocs[azure]
+# 1. Install with remote provider support
+pip install askyourdocs[remote]
 
-# Set your credentials
+# 2. Set your credentials
 export AZURE_OPENAI_API_KEY="your-api-key"
 export AZURE_OPENAI_ENDPOINT="https://your-resource.openai.azure.com/"
 
-# Configure for Azure
+# 3. Configure for Azure (recommended)
 askyourdocs config setup --provider azure
 ```
 
@@ -355,6 +348,8 @@ embedding:
   device: "cpu"              # cpu/cuda/mps/auto
 ```
 
+**Setup Command:** `askyourdocs config setup --provider ollama`
+
 ### Remote Models (API Key Required)
 
 **OpenAI Configuration:**
@@ -372,6 +367,8 @@ embedding:
   api_key: "sk-your-key-here"
 ```
 
+**Setup Command:** `askyourdocs config setup --provider openai`
+
 **Anthropic Configuration:**
 ```yaml
 model:
@@ -386,6 +383,8 @@ embedding:
   model: "BAAI/bge-small-en-v1.5"
 ```
 
+**Setup Command:** `askyourdocs config setup --provider anthropic`
+
 **Azure OpenAI Configuration:**
 ```yaml
 model:
@@ -396,6 +395,7 @@ model:
   azure_deployment: "your-deployment-name"
 ```
 
+**Setup Command:** `askyourdocs config setup --provider azure`
 ### Advanced Configuration
 
 **Document Processing:**
@@ -445,18 +445,20 @@ askyourdocs ask "What are the key findings?"
 
 ### Using with OpenAI
 ```bash
-# 1. Install with OpenAI support
-pip install askyourdocs[openai]
+# 1. Install with remote provider support
+pip install askyourdocs[remote]
 
-# 2. Set up OpenAI
+# 2. Set up OpenAI API key
 export OPENAI_API_KEY="your-api-key"
+
+# 3. Configure for OpenAI
 askyourdocs config setup --provider openai
 
-# 4. Index and query your documents
+# 4. Index and query documents
 askyourdocs ingest ./documents
 askyourdocs ask "What are the key findings in these documents?"
 
-# 5. Verify configuration
+# 5. Verify setup
 askyourdocs status
 ```
 
@@ -519,25 +521,25 @@ askyourdocs ask "Compare findings in ./study-a vs ./study-b"
 
 ### Custom Configuration
 ```bash
-# Use a specific model
-askyourdocs config set model.name "llama3.1:8b"
+# Switch to different providers (recommended method)
+askyourdocs config setup --provider ollama
+askyourdocs config setup --provider openai
+askyourdocs config setup --provider anthropic
+askyourdocs config setup --provider azure
 
-# Switch to OpenAI
-askyourdocs config set model.provider "openai"
-askyourdocs config set model.name "gpt-4"
-askyourdocs config set model.api_key "your-key"
+# Interactive setup (choose provider during setup)
+askyourdocs config setup
 
-# Adjust chunk size for longer documents
+# Advanced: Direct configuration (for automation/scripts)
 askyourdocs config set chunking.chunk_size 1500
-
-# Enable GPU acceleration for embeddings
 askyourdocs config set embedding.device "cuda"
+askyourdocs config set retrieval.top_k 10
 
-# Use OpenAI embeddings (requires API key)
-askyourdocs config set embedding.provider "openai"
+# View current configuration
+askyourdocs config show
 
-# Set custom storage location
-askyourdocs config set storage.path "/my/custom/path"
+# Validate configuration
+askyourdocs config validate
 ```
 
 ### Monitoring and Maintenance
@@ -605,7 +607,7 @@ AskYourDocs uses a modern RAG architecture:
 askyourdocs status
 askyourdocs config validate
 
-# Interactive setup
+# Fix with interactive setup (recommended)
 askyourdocs config setup
 ```
 
@@ -650,17 +652,17 @@ askyourdocs config set embedding.model "sentence-transformers/all-MiniLM-L6-v2"
 
 **"API key not found" (for remote providers)**
 ```bash
-# For Anthropic
+# Set environment variable first
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
+export OPENAI_API_KEY="your-openai-key"
+export AZURE_OPENAI_API_KEY="your-azure-key"
 
-# For OpenAI
-export OPENAI_API_KEY="your-key"
+# Then configure provider (recommended)
+askyourdocs config setup --provider anthropic
+askyourdocs config setup --provider openai
+askyourdocs config setup --provider azure
 
-# Or set in config
-askyourdocs config set model.provider anthropic
-askyourdocs config set model.api_key "your-key"
-
-# Verify setup
+# Verify configuration
 askyourdocs config validate
 askyourdocs status
 ```
