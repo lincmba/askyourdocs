@@ -167,7 +167,7 @@ files = [
 name = "anthropic"
 version = "0.66.0"
 description = "The official Python library for the anthropic API"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "anthropic-0.66.0-py3-none-any.whl", hash = "sha256:67b8cd4486f3cdd09211598dc5325cc8e4e349c106a03041231d551603551c06"},
@@ -245,7 +245,7 @@ tests-mypy = ["mypy (>=1.11.1)", "pytest-mypy-plugins"]
 name = "azure-core"
 version = "1.35.0"
 description = "Microsoft Azure Core Library for Python"
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "azure_core-1.35.0-py3-none-any.whl", hash = "sha256:8db78c72868a58f3de8991eb4d22c4d368fae226dac1002998d6c50437e7dad1"},
@@ -265,7 +265,7 @@ tracing = ["opentelemetry-api (>=1.26,<2.0)"]
 name = "azure-identity"
 version = "1.24.0"
 description = "Microsoft Azure Identity Library for Python"
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "azure_identity-1.24.0-py3-none-any.whl", hash = "sha256:9e04997cde0ab02ed66422c74748548e620b7b29361c72ce622acab0267ff7c4"},
@@ -461,7 +461,7 @@ uvloop = ["uvloop (>=0.15.2)"]
 name = "boto3"
 version = "1.40.26"
 description = "The AWS SDK for Python"
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "boto3-1.40.26-py3-none-any.whl", hash = "sha256:8272deb4b82c4a0faa1231c2cd5c6d267d71ed6265abef545c1d5b7f0aa936d8"},
@@ -480,7 +480,7 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 name = "botocore"
 version = "1.40.26"
 description = "Low-level, data-driven core of boto 3."
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "botocore-1.40.26-py3-none-any.whl", hash = "sha256:c3e89787b1a360d0fd30f9066864415df02d54b07691cabc34a6b1a01c3d2549"},
@@ -543,7 +543,7 @@ files = [
 name = "cffi"
 version = "2.0.0"
 description = "Foreign Function Interface for Python calling C code."
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "cffi-2.0.0-cp310-cp310-macosx_10_13_x86_64.whl", hash = "sha256:0cf2d91ecc3fcc0625c2c530fe004f82c110405f101548512cce44322fa8ac44"},
@@ -930,7 +930,7 @@ toml = ["tomli"]
 name = "cryptography"
 version = "45.0.7"
 description = "cryptography is a package which provides cryptographic recipes and primitives to Python developers."
-optional = true
+optional = false
 python-versions = "!=3.9.0,!=3.9.1,>=3.7"
 files = [
     {file = "cryptography-45.0.7-cp311-abi3-macosx_10_9_universal2.whl", hash = "sha256:3be4f21c6245930688bd9e162829480de027f8bf962ede33d4f8ba7d67a00cee"},
@@ -1851,7 +1851,7 @@ files = [
 name = "jmespath"
 version = "1.0.1"
 description = "JSON Matching Expressions"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980"},
@@ -2110,7 +2110,7 @@ pydantic = ">=2.11.5"
 name = "llama-index-llms-anthropic"
 version = "0.8.6"
 description = "llama-index llms anthropic integration"
-optional = true
+optional = false
 python-versions = "<4.0,>=3.9"
 files = [
     {file = "llama_index_llms_anthropic-0.8.6-py3-none-any.whl", hash = "sha256:7887bf6540af4b016505e04eab4a5426e1d8d367d170b424f0b3160596faa1ea"},
@@ -2125,7 +2125,7 @@ llama-index-core = ">=0.13.0,<0.15"
 name = "llama-index-llms-azure-openai"
 version = "0.4.1"
 description = "llama-index llms azure openai integration"
-optional = true
+optional = false
 python-versions = "<4.0,>=3.9"
 files = [
     {file = "llama_index_llms_azure_openai-0.4.1-py3-none-any.whl", hash = "sha256:535f9eabfc92651f0a0a6c51c6f7138aeaadce3e4c0c72d8aca2b9f511ae99e8"},
@@ -2816,7 +2816,7 @@ tests = ["pytest (>=4.6)"]
 name = "msal"
 version = "1.33.0"
 description = "The Microsoft Authentication Library (MSAL) for Python library enables your app to access the Microsoft Cloud by supporting authentication of users with Microsoft Azure Active Directory accounts (AAD) and Microsoft Accounts (MSA) using industry standard OAuth2 and OpenID Connect."
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "msal-1.33.0-py3-none-any.whl", hash = "sha256:c0cd41cecf8eaed733ee7e3be9e040291eba53b0f262d3ae9c58f38b04244273"},
@@ -2835,7 +2835,7 @@ broker = ["pymsalruntime (>=0.14,<0.19)", "pymsalruntime (>=0.17,<0.19)", "pymsa
 name = "msal-extensions"
 version = "1.3.1"
 description = "Microsoft Authentication Library extensions (MSAL EX) provides a persistence API that can save your data on disk, encrypted on Windows, macOS and Linux. Concurrent data access will be coordinated by a file lock mechanism."
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "msal_extensions-1.3.1-py3-none-any.whl", hash = "sha256:96d3de4d034504e969ac5e85bae8106c8373b5c6568e4c8fa7af2eca9dbe6bca"},
@@ -4334,7 +4334,7 @@ files = [
 name = "pycparser"
 version = "2.22"
 description = "C parser in Python"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "pycparser-2.22-py3-none-any.whl", hash = "sha256:c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc"},
@@ -4491,7 +4491,7 @@ windows-terminal = ["colorama (>=0.4.6)"]
 name = "pyjwt"
 version = "2.10.1"
 description = "JSON Web Token implementation in Python"
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "PyJWT-2.10.1-py3-none-any.whl", hash = "sha256:dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb"},
@@ -5180,7 +5180,7 @@ files = [
 name = "s3transfer"
 version = "0.13.1"
 description = "An Amazon S3 Transfer Manager"
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "s3transfer-0.13.1-py3-none-any.whl", hash = "sha256:a981aa7429be23fe6dfc13e80e4020057cbab622b08c0315288758d67cabc724"},
@@ -6591,16 +6591,12 @@ test = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more_it
 type = ["pytest-mypy"]
 
 [extras]
-all = ["anthropic", "llama-index-embeddings-openai", "llama-index-llms-anthropic", "llama-index-llms-openai", "openai", "torch", "transformers"]
-anthropic = ["anthropic", "llama-index-llms-anthropic"]
-azure = ["llama-index-llms-azure-openai", "openai"]
+all = []
 dev = []
 docs = []
 gpu = ["torch", "transformers"]
-openai = ["llama-index-embeddings-openai", "llama-index-llms-openai", "openai"]
-remote = ["anthropic", "llama-index-embeddings-openai", "llama-index-llms-anthropic", "llama-index-llms-openai", "openai"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.14"
-content-hash = "4ed98b23804974b0021fc59447769a1408474db27a261ab65e4ba5fd6bc6da1c"
+content-hash = "c52c841bdb2c64c5e535d07a64ac77435cee928d532fc2bf4e27aca9f2fb6c11"
