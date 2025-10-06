@@ -24,7 +24,7 @@ classifiers = [
     "Topic :: Text Processing :: Indexing",
     "Topic :: Office/Business :: Office Suites",
 ]
-packages = [{include = "askyourdocs", from = "src"}]
+packages = [{ include = "askyourdocs", from = "src" }]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.14"
@@ -51,9 +51,12 @@ llama-index-embeddings-huggingface = "0.6.0"
 sentence-transformers = "5.1.0"
 
 # Remote LLM support (optional)
-llama-index-llms-openai = {version = "0.5.4", optional = true}
-openai = {version = "1.102.0", optional = true}
-llama-index-embeddings-openai = {version = "0.5.0", optional = true}
+llama-index-llms-openai = { version = "0.5.4", optional = true }
+openai = { version = "1.102.0", optional = true }
+llama-index-embeddings-openai = { version = "0.5.0", optional = true }
+anthropic = { version = "0.66.0", optional = true }
+llama-index-llms-anthropic = { version = "0.8.6", optional = true }
+llama-index-llms-azure-openai = { version = "0.4.1", optional = true }
 
 # Document processing
 pypdf = "6.0.0"
@@ -69,20 +72,27 @@ tqdm = "4.67.1"
 requests = "2.32.5"
 
 # Optional: GPU acceleration
-torch = {version = "2.8.0", optional = true}
-transformers = {version = "4.56.0", optional = true}
-llama-index-llms-anthropic = "^0.8.6"
-llama-index-llms-azure-openai = "^0.4.1"
+torch = { version = "2.8.0", optional = true }
+transformers = { version = "4.56.0", optional = true }
 
 [tool.poetry.extras]
 # Remote LLM providers
 openai = ["llama-index-llms-openai", "llama-index-embeddings-openai", "openai"]
 anthropic = ["llama-index-llms-anthropic", "anthropic"]
 azure = ["llama-index-llms-azure-openai", "openai"]
-remote = ["llama-index-llms-openai", "llama-index-llms-anthropic", "llama-index-embeddings-openai", "openai", "anthropic"]
+remote = [
+    "llama-index-llms-openai",
+    "llama-index-llms-anthropic",
+    "llama-index-embeddings-openai",
+    "openai",
+    "anthropic"
+]
 
 # GPU acceleration
 gpu = ["torch", "transformers"]
+
+# Documentation
+docs = ["mkdocs", "mkdocs-material", "mkdocs-click"]
 
 # Development tools
 dev = [
@@ -90,9 +100,6 @@ dev = [
     "black", "ruff", "mypy", "pre-commit",
     "types-pyyaml", "types-requests"
 ]
-
-# Documentation
-docs = ["mkdocs", "mkdocs-material", "mkdocs-click"]
 
 # All extras combined
 all = [
@@ -102,16 +109,19 @@ all = [
 ]
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^7.4.0"
-pytest-cov = "^4.1.0"
-pytest-mock = "^3.12.0"
-pytest-asyncio = "^0.21.0"
-black = "^23.11.0"
-ruff = "^0.1.6"
-mypy = "^1.7.0"
-pre-commit = "^3.5.0"
-types-pyyaml = "^6.0.12"
-types-requests = "^2.31.0"
+pytest = "7.4.4"
+pytest-cov = "4.1.0"
+pytest-mock = "3.15.0"
+pytest-asyncio = "0.21.2"
+black = "23.12.1"
+ruff = "0.1.15"
+mypy = "1.17.1"
+pre-commit = "3.8.0"
+types-pyyaml = "6.0.12.20250822"
+types-requests = "2.32.4.20250809"
+mkdocs = "1.6.1"
+mkdocs-material = "9.5.40"
+mkdocs-click = "0.8.1"
 
 [tool.poetry.scripts]
 askyourdocs = "askyourdocs.main:cli"
@@ -123,11 +133,10 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 88
-target-version = ['py39']
+target-version = ["py310"]
 include = '\.pyi?$'
 extend-exclude = '''
 /(
-  # directories
   \.eggs
   | \.git
   | \.hg
@@ -140,29 +149,16 @@ extend-exclude = '''
 '''
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 line-length = 88
-select = [
-    "E",  # pycodestyle errors
-    "W",  # pycodestyle warnings
-    "F",  # pyflakes
-    "I",  # isort
-    "B",  # flake8-bugbear
-    "C4", # flake8-comprehensions
-    "UP", # pyupgrade
-    "S",  # bandit
-]
-ignore = [
-    "E501",  # line too long, handled by black
-    "B008",  # do not perform function calls in argument defaults
-    "S101",  # use of assert
-]
+select = ["E", "W", "F", "I", "B", "C4", "UP", "S"]
+ignore = ["E501", "B008", "S101"]
 
 [tool.ruff.per-file-ignores]
 "tests/*" = ["S101"]
 
 [tool.mypy]
-python_version = ">=3.10,<4.0"
+python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -198,15 +194,12 @@ python_functions = ["test_*"]
 addopts = "--cov=askyourdocs --cov-report=term-missing --cov-report=html"
 filterwarnings = [
     "ignore::DeprecationWarning",
-    "ignore::PendingDeprecationWarning",
+    "ignore::PendingDeprecationWarning"
 ]
 
 [tool.coverage.run]
 source = ["src"]
-omit = [
-    "*/tests/*",
-    "*/test_*",
-]
+omit = ["*/tests/*", "*/test_*"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -219,5 +212,5 @@ exclude_lines = [
     "if 0:",
     "if __name__ == .__main__.:",
     "class .*\\bProtocol\\):",
-    "@(abc\\.)?abstractmethod",
+    "@(abc\\.)?abstractmethod"
 ]

@@ -1,15 +1,13 @@
 """Tests for validation utilities."""
 
-import pytest
 
 from askyourdocs.utils.validation import (
-    validate_file_path,
-    validate_question,
+    is_safe_filename,
     sanitize_input,
     validate_chunk_size,
-    validate_top_k,
+    validate_question,
     validate_similarity_threshold,
-    is_safe_filename,
+    validate_top_k,
 )
 
 

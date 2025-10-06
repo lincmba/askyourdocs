@@ -52,7 +52,7 @@ poetry install
 poetry install --extras "all"
 
 # Run a basic command
-poetry run askyourdocs --help 
+poetry run askyourdocs --help
 ```
 
 #### Option 3: Install from Source (Advanced)
@@ -80,10 +80,10 @@ pip install -e ".[gpu,remote,dev]"
    ```bash
    # macOS
    brew install ollama
-   
+
    # Linux
    curl -fsSL https://ollama.ai/install.sh | sh
-   
+
    # Windows (WSL)
    curl -fsSL https://ollama.ai/install.sh | sh
    ```
@@ -92,10 +92,10 @@ pip install -e ".[gpu,remote,dev]"
    ```bash
    # Start Ollama service
    ollama serve
-   
+
    # In another terminal, download the default lightweight model
    ollama pull tinyllama:1.1b
-   
+
    # Or download a more capable model (larger download)
    ollama pull llama3.1:8b
    ```
@@ -147,10 +147,10 @@ askyourdocs config setup --provider azure
    ```bash
    # Index documents in current directory
    askyourdocs ingest
-   
+
    # Index specific directory
    askyourdocs ingest ./my-documents
-   
+
    # Index with progress and verbose output
    askyourdocs ingest ./docs --verbose
    ```
@@ -159,10 +159,10 @@ askyourdocs config setup --provider azure
    ```bash
    # Ask a question
    askyourdocs ask "What are the main conclusions in the research papers?"
-   
+
    # Ask with specific number of sources
    askyourdocs ask "How does the API authentication work?" --top-k 5
-   
+
    # Get detailed response with full sources
    askyourdocs ask "Summarize the project requirements" --verbose
    ```
@@ -171,7 +171,7 @@ askyourdocs config setup --provider azure
    ```bash
    # Start interactive session
    askyourdocs interactive
-   
+
    # In interactive mode:
    > What is the project timeline?
    > Can you explain the technical architecture?
@@ -182,7 +182,7 @@ askyourdocs config setup --provider azure
    ```bash
    # View system status and configuration
    askyourdocs status
-   
+
    # Validate configuration
    askyourdocs config validate
    ```
@@ -191,10 +191,10 @@ askyourdocs config setup --provider azure
    ```bash
    # Interactive setup
    askyourdocs config setup
-   
+
    # View configuration
    askyourdocs config show
-   
+
    # Set specific values
    askyourdocs config set model.temperature 0.2
    askyourdocs config set retrieval.top_k 10

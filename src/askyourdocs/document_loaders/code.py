@@ -7,7 +7,6 @@ extracting comments, docstrings, and code structure.
 
 import re
 from pathlib import Path
-from typing import Dict, List, Optional
 
 from llama_index.core import Document
 
@@ -87,7 +86,7 @@ class CodeLoader:
             ".pm": "perl",
         }
 
-    def load_data(self, file_path: Path) -> List[Document]:
+    def load_data(self, file_path: Path) -> list[Document]:
         """Load and parse code file."""
         try:
             content = self._read_code_file(file_path)
@@ -135,7 +134,7 @@ class CodeLoader:
 
         for encoding in encodings:
             try:
-                with open(file_path, "r", encoding=encoding) as f:
+                with open(file_path, encoding=encoding) as f:
                     return f.read()
             except UnicodeDecodeError:
                 continue
@@ -155,7 +154,7 @@ class CodeLoader:
 
     def _extract_code_components(
         self, content: str, language: str
-    ) -> Dict[str, List[str]]:
+    ) -> dict[str, list[str]]:
         """Extract comments, docstrings, and other components."""
         components = {
             "comments": [],
@@ -203,7 +202,7 @@ class CodeLoader:
         return components
 
     def _extract_python_components(
-        self, content: str, components: Dict[str, List[str]]
+        self, content: str, components: dict[str, list[str]]
     ) -> None:
         """Extract Python-specific components."""
         # Functions
@@ -222,7 +221,7 @@ class CodeLoader:
         components["imports"].extend(imports)
 
     def _extract_js_components(
-        self, content: str, components: Dict[str, List[str]]
+        self, content: str, components: dict[str, list[str]]
     ) -> None:
         """Extract JavaScript/TypeScript components."""
         # Functions
@@ -252,7 +251,7 @@ class CodeLoader:
             components["imports"].extend(imports)
 
     def _extract_java_components(
-        self, content: str, components: Dict[str, List[str]]
+        self, content: str, components: dict[str, list[str]]
     ) -> None:
         """Extract Java-specific components."""
         # Methods
@@ -276,7 +275,7 @@ class CodeLoader:
         self,
         file_path: Path,
         content: str,
-        components: Dict[str, List[str]],
+        components: dict[str, list[str]],
         language: str,
     ) -> str:
         """Create enriched content with metadata and structure."""

@@ -9,7 +9,7 @@ local and remote LLM providers.
 import os
 import shutil
 from pathlib import Path
-from typing import Any, Dict, Optional, Union, Tuple, List
+from typing import Any, Optional, Union
 
 import yaml
 from pydantic import BaseModel, Field, validator
@@ -49,7 +49,7 @@ class ModelConfig(BaseModel):
         return v
 
     @validator("name")
-    def validate_model_name(cls, v: str, values: Dict[str, Any]) -> str:
+    def validate_model_name(cls, v: str, values: dict[str, Any]) -> str:
         provider = values.get("provider", "ollama")
 
         # Validate model names based on provider
@@ -127,7 +127,7 @@ class ChunkingConfig(BaseModel):
         return v
 
     @validator("chunk_overlap")
-    def validate_overlap(cls, v: int, values: Dict[str, Any]) -> int:
+    def validate_overlap(cls, v: int, values: dict[str, Any]) -> int:
         chunk_size = values.get("chunk_size", 1000)
         if v >= chunk_size:
             raise ValueError("Chunk overlap must be less than chunk size")
@@ -302,24 +302,24 @@ model:
   temperature: {config_dict['model']['temperature']}  # Response creativity (0.0-2.0)
   max_tokens: {config_dict['model']['max_tokens']}  # Maximum response length
   timeout: {config_dict['model']['timeout']}  # Request timeout in seconds
-  
+
   # Remote provider settings (only needed for OpenAI/Anthropic/Azure)
   # api_key: "your-api-key-here"  # Or set OPENAI_API_KEY/ANTHROPIC_API_KEY env var
   # api_base: "https://api.openai.com/v1"  # Custom API endpoint
   # organization: "your-org-id"  # OpenAI organization ID
-  
+
   # Azure-specific settings
   # azure_endpoint: "https://your-resource.openai.azure.com/"
   # azure_deployment: "your-deployment-name"
 
-# Embedding Model Configuration  
+# Embedding Model Configuration
 embedding:
   provider: "{config_dict['embedding']['provider']}"  # huggingface (local), openai
   model: "{config_dict['embedding']['model']}"  # Embedding model name
   device: "{config_dict['embedding']['device']}"  # cpu, cuda, mps, auto
   batch_size: {config_dict['embedding']['batch_size']}  # Batch size for processing
   max_length: {config_dict['embedding']['max_length']}  # Maximum token length
-  
+
   # For OpenAI embeddings (optional)
   # api_key: "your-openai-api-key"
 
@@ -371,7 +371,7 @@ logging:
 #
 # For Anthropic (requires API key):
 # model:
-#   provider: "anthropic" 
+#   provider: "anthropic"
 #   name: "claude-3-sonnet-20240229"
 #   api_key: "sk-ant-your-key-here"
 #
@@ -395,7 +395,7 @@ logging:
             self._create_default_config()
 
         try:
-            with open(self.config_file, "r") as f:
+            with open(self.config_file) as f:
                 config_data = yaml.safe_load(f) or {}
 
             config = Config(**config_data)
@@ -474,7 +474,7 @@ logging:
 
         self._create_default_config()
 
-    def validate_config(self) -> Tuple[bool, List[str]]:
+    def validate_config(self) -> tuple[bool, list[str]]:
         """Validate current configuration and return issues."""
         issues = []
 
@@ -510,7 +510,7 @@ logging:
             # Check embedding model
             if config.embedding.provider == "huggingface":
                 try:
-                    from sentence_transformers import SentenceTransformer
+                    pass
 
                     # This will download the model if not available
                     # SentenceTransformer(config.embedding.model)

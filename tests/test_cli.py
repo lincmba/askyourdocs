@@ -2,9 +2,8 @@
 
 from unittest.mock import patch
 
-from click.testing import CliRunner
-
 from askyourdocs.main import cli
+from click.testing import CliRunner
 
 
 class TestCLI:

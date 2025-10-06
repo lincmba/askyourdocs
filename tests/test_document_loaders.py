@@ -3,11 +3,9 @@
 import tempfile
 from pathlib import Path
 
-import pytest
-
 from askyourdocs.document_loaders import get_document_loader, get_supported_extensions
-from askyourdocs.document_loaders.text import TextLoader
 from askyourdocs.document_loaders.code import CodeLoader
+from askyourdocs.document_loaders.text import TextLoader
 
 
 class TestDocumentLoaders:
@@ -145,10 +143,10 @@ from typing import List
 
 class TestClass:
     """A test class."""
-    
+
     def __init__(self):
         self.value = 42
-    
+
     def test_method(self, param: str) -> str:
         """Test method with docstring."""
         # This is a comment
