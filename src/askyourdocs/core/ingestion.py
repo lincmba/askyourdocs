@@ -7,7 +7,7 @@ and incremental updates with change detection.
 
 import time
 from pathlib import Path
-from typing import List, Optional, Set
+from typing import Optional
 
 from llama_index.core import Document, Settings
 from llama_index.core.node_parser import SentenceSplitter
@@ -15,19 +15,19 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.embeddings.openai import OpenAIEmbedding
 from rich.console import Console
 from rich.progress import (
+    BarColumn,
     Progress,
     SpinnerColumn,
-    TextColumn,
-    BarColumn,
     TaskProgressColumn,
+    TextColumn,
 )
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-from .config import Config
-from .storage import VectorStoreManager
 from ..document_loaders import get_document_loader
 from ..utils.logging import get_logger
+from .config import Config
+from .storage import VectorStoreManager
 
 console = Console()
 logger = get_logger(__name__)
@@ -39,7 +39,7 @@ class DocumentChangeHandler(FileSystemEventHandler):
     def __init__(self, ingestor: "DocumentIngestor") -> None:
         self.ingestor = ingestor
         self.debounce_time = 2.0  # seconds
-        self.pending_files: Set[Path] = set()
+        self.pending_files: set[Path] = set()
         self.last_event_time = 0.0
 
     def on_modified(self, event) -> None:
@@ -194,10 +194,10 @@ class DocumentIngestor:
 
     def _filter_files(
         self,
-        files: List[Path],
-        include_patterns: Optional[List[str]] = None,
-        exclude_patterns: Optional[List[str]] = None,
-    ) -> List[Path]:
+        files: list[Path],
+        include_patterns: Optional[list[str]] = None,
+        exclude_patterns: Optional[list[str]] = None,
+    ) -> list[Path]:
         """Filter files based on include/exclude patterns."""
         filtered_files = []
 
@@ -227,7 +227,7 @@ class DocumentIngestor:
 
         return filtered_files
 
-    def _discover_files(self, directory: Path) -> List[Path]:
+    def _discover_files(self, directory: Path) -> list[Path]:
         """Discover all processable files in directory."""
         files = []
 
@@ -273,7 +273,7 @@ class DocumentIngestor:
             logger.error(f"Failed to load document {file_path}: {e}")
             return None
 
-    def _process_files(self, file_paths: List[Path]) -> List[Document]:
+    def _process_files(self, file_paths: list[Path]) -> list[Document]:
         """Process multiple files with progress tracking."""
         documents = []
 
@@ -301,8 +301,8 @@ class DocumentIngestor:
     def ingest_directory(
         self,
         path: Path,
-        include_patterns: Optional[List[str]] = None,
-        exclude_patterns: Optional[List[str]] = None,
+        include_patterns: Optional[list[str]] = None,
+        exclude_patterns: Optional[list[str]] = None,
         force_rebuild: bool = False,
     ) -> None:
         """Ingest documents from a directory or single file."""

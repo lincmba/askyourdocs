@@ -8,7 +8,6 @@ HTML, XML, LaTeX, and other text-based formats.
 import csv
 import json
 from pathlib import Path
-from typing import List
 
 import yaml
 from llama_index.core import Document
@@ -24,7 +23,7 @@ class TextLoader:
     def __init__(self) -> None:
         self.encoding_fallbacks = ["utf-8", "utf-16", "iso-8859-1", "cp1252"]
 
-    def load_data(self, file_path: Path) -> List[Document]:
+    def load_data(self, file_path: Path) -> list[Document]:
         """Load and parse text document."""
         try:
             file_extension = file_path.suffix.lower()
@@ -71,7 +70,7 @@ class TextLoader:
         """Read file content with encoding detection."""
         for encoding in self.encoding_fallbacks:
             try:
-                with open(file_path, "r", encoding=encoding) as f:
+                with open(file_path, encoding=encoding) as f:
                     return f.read()
             except UnicodeDecodeError:
                 continue

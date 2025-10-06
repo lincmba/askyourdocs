@@ -5,13 +5,14 @@ Handles query processing, context retrieval, response generation,
 and streaming responses using LlamaIndex.
 """
 
-import time
 import re
-from typing import Any, Dict, Generator, List, Optional
+import time
+from collections.abc import Generator
+from typing import Any, Optional
 
 from llama_index.core import Settings
 from llama_index.core.base.response.schema import StreamingResponse
-from llama_index.core.llms import ChatMessage, MessageRole
+from llama_index.core.llms import ChatMessage
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.response_synthesizers import (
     ResponseMode,
@@ -19,15 +20,15 @@ from llama_index.core.response_synthesizers import (
 )
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-from llama_index.llms.ollama import Ollama
 from llama_index.embeddings.openai import OpenAIEmbedding
-from llama_index.llms.openai import OpenAI
 from llama_index.llms.anthropic import Anthropic
+from llama_index.llms.ollama import Ollama
+from llama_index.llms.openai import OpenAI
 from rich.console import Console
 
+from ..utils.logging import get_logger
 from .config import Config
 from .storage import VectorStoreManager
-from ..utils.logging import get_logger
 
 console = Console()
 logger = get_logger(__name__)
@@ -301,7 +302,7 @@ class QueryEngine:
             logger.error(f"Streaming query failed: {e}")
             raise RuntimeError(f"Streaming query failed: {e}")
 
-    def keyword_search(self, query: str, limit: int = 10) -> List[Dict[str, Any]]:
+    def keyword_search(self, query: str, limit: int = 10) -> list[dict[str, Any]]:
         """Perform fast keyword search without LLM."""
         try:
             # This is a simplified implementation
@@ -336,7 +337,7 @@ class QueryEngine:
             logger.error(f"Keyword search failed: {e}")
             return []
 
-    def get_similar_documents(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
+    def get_similar_documents(self, query: str, top_k: int = 5) -> list[dict[str, Any]]:
         """Get documents similar to query without generating response."""
         try:
             index = self.storage_manager.get_index()
@@ -391,7 +392,7 @@ class QueryEngine:
             logger.error(f"Connection test failed: {e}")
             return False
 
-    def get_chat_history(self) -> List[ChatMessage]:
+    def get_chat_history(self) -> list[ChatMessage]:
         """Get chat history for conversation context."""
         # This would be implemented for conversational features
         return []

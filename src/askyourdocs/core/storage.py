@@ -6,12 +6,12 @@ and data export/import functionality.
 """
 
 import hashlib
+import json
 import shutil
 import tarfile
 import tempfile
-import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Optional
 
 import chromadb
 from chromadb.config import Settings as ChromaSettings
@@ -19,8 +19,8 @@ from llama_index.core import StorageContext, VectorStoreIndex
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from rich.console import Console
 
-from .config import Config
 from ..utils.logging import get_logger
+from .config import Config
 
 console = Console()
 logger = get_logger(__name__)
@@ -122,7 +122,7 @@ class VectorStoreManager:
             logger.warning(f"Failed to load existing index: {e}")
             return None
 
-    def create_index(self, documents: List[Any]) -> VectorStoreIndex:
+    def create_index(self, documents: list[Any]) -> VectorStoreIndex:
         """Create new vector index from documents."""
         vector_store = self._get_vector_store()
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
@@ -147,11 +147,11 @@ class VectorStoreManager:
         except Exception as e:
             logger.warning(f"Failed to track ingested path: {e}")
 
-    def get_ingested_paths(self) -> Set[str]:
+    def get_ingested_paths(self) -> set[str]:
         """Get set of ingested paths."""
         try:
             if self.paths_file.exists():
-                with open(self.paths_file, "r") as f:
+                with open(self.paths_file) as f:
                     return set(json.load(f))
         except Exception as e:
             logger.warning(f"Failed to load ingested paths: {e}")
@@ -168,7 +168,7 @@ class VectorStoreManager:
                 return True
         return False
 
-    def add_documents(self, documents: List[Any]) -> None:
+    def add_documents(self, documents: list[Any]) -> None:
         """Add documents to existing index."""
         if self._index is None:
             self._index = self.get_index()
@@ -189,7 +189,7 @@ class VectorStoreManager:
         except Exception:
             return 0
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Get storage statistics."""
         try:
             document_count = self.get_document_count()

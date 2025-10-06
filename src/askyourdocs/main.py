@@ -7,22 +7,22 @@ AskYourDocs functionality including document ingestion, querying, and configurat
 """
 
 import sys
-import traceback
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional
 
 import click
+import yaml
 from rich.console import Console
 from rich.panel import Panel
-from rich.text import Text
 from rich.table import Table
+from rich.text import Text
 
 from . import __version__
-from .core.config import get_config, ConfigManager
+from .core.config import ConfigManager, get_config
 from .core.ingestion import DocumentIngestor
 from .core.retrieval import QueryEngine
 from .core.storage import VectorStoreManager
-from .utils.logging import setup_logging, get_logger
+from .utils.logging import get_logger, setup_logging
 
 console = Console()
 logger = get_logger(__name__)
@@ -73,7 +73,7 @@ def cli(ctx: click.Context, version: bool, verbose: bool) -> None:
         sys.exit(1)
 
 
-def _check_prerequisites(config) -> Tuple[bool, list[str]]:
+def _check_prerequisites(config) -> tuple[bool, list[str]]:
     """Check if all prerequisites are met for the current configuration."""
     issues = []
 
@@ -527,11 +527,11 @@ def config_setup(provider: Optional[str]) -> None:
         if provider == "ollama":
             # Ollama setup
             model_name = (
-                console.input(f"Model name [tinyllama:1.1b]: ").strip()
+                console.input("Model name [tinyllama:1.1b]: ").strip()
                 or "tinyllama:1.1b"
             )
             base_url = (
-                console.input(f"Ollama URL [http://localhost:11434]: ").strip()
+                console.input("Ollama URL [http://localhost:11434]: ").strip()
                 or "http://localhost:11434"
             )
 
@@ -733,7 +733,7 @@ def export(output: str, include_config: bool) -> None:
         config = get_config()
         storage_manager = VectorStoreManager(config)
 
-        with console.status(f"[bold blue]Creating backup..."):
+        with console.status("[bold blue]Creating backup..."):
             storage_manager.export_data(output, include_config)
 
         console.print(f"✅ [green]Backup created: {output}[/green]")
@@ -759,7 +759,7 @@ def import_data(input: str, merge: bool) -> None:
         config = get_config()
         storage_manager = VectorStoreManager(config)
 
-        with console.status(f"[bold blue]Importing backup..."):
+        with console.status("[bold blue]Importing backup..."):
             storage_manager.import_data(input, merge)
 
         console.print(f"✅ [green]Import completed: {input}[/green]")

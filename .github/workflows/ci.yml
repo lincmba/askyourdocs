@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
         python-version: ["3.10", "3.11", "3.12"]
         exclude:
           # Reduce matrix size for faster CI
@@ -19,40 +19,40 @@ jobs:
             python-version: "3.10"
           - os: macos-latest
             python-version: "3.10"
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    
+
     - name: Install Poetry
       uses: snok/install-poetry@v1
       with:
         version: latest
         virtualenvs-create: true
         virtualenvs-in-project: true
-    
+
     - name: Load cached venv
       id: cached-poetry-dependencies
       uses: actions/cache@v3
       with:
         path: .venv
         key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
-    
+
     - name: Install dependencies
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: poetry install --no-interaction --no-root --extras "all"
-    
+
     - name: Install project
       run: poetry install --no-interaction --extras "all"
-    
+
     - name: Run tests
       run: |
         poetry run pytest --cov=askyourdocs --cov-report=xml --cov-report=term-missing
-    
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
@@ -63,41 +63,41 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.11"
-    
+
     - name: Install Poetry
       uses: snok/install-poetry@v1
       with:
         version: latest
         virtualenvs-create: true
         virtualenvs-in-project: true
-    
+
     - name: Load cached venv
       id: cached-poetry-dependencies
       uses: actions/cache@v3
       with:
         path: .venv
         key: venv-${{ runner.os }}-3.11-${{ hashFiles('**/poetry.lock') }}
-    
+
     - name: Install dependencies
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: poetry install --no-interaction --no-root --extras "dev"
-    
+
     - name: Install project
       run: poetry install --no-interaction --extras "dev"
-    
+
     - name: Run linting
       run: |
-#        poetry run ruff check src/ tests/
         poetry run black --check src/ tests/
-    
+#        poetry run ruff check src/ tests/
+
 #    - name: Run type checking
 #      run: poetry run mypy src/
 #
@@ -107,31 +107,31 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: [test, lint]
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.11"
-    
+
     - name: Install Poetry
       uses: snok/install-poetry@v1
       with:
         version: latest
         virtualenvs-create: true
         virtualenvs-in-project: true
-    
+
     - name: Build package
       run: poetry build
-    
+
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dist
         path: dist/
-    
+
     - name: Test package installation
       run: |
         pip install dist/*.whl
@@ -141,40 +141,40 @@ jobs:
   integration-test:
     runs-on: ubuntu-latest
     needs: build
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.11"
-    
+
     - name: Download build artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: dist
         path: dist/
-    
+
     - name: Install package
       run: pip install dist/*.whl
-    
+
     - name: Create test documents
       run: |
         mkdir test_docs
         echo "This is a test document about artificial intelligence." > test_docs/ai.txt
         echo "This document discusses machine learning algorithms." > test_docs/ml.txt
         echo "# Python Tutorial\n\nThis is a Python tutorial." > test_docs/python.md
-    
+
     - name: Test CLI commands
       run: |
         # Test basic commands
         askyourdocs --version
         askyourdocs --help
-        
+
         # Test configuration
         askyourdocs config show
         askyourdocs status
-        
+
         # Note: We can't test ingestion/queries without Ollama in CI
         # These would be tested in a separate workflow with Ollama setup

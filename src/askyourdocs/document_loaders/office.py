@@ -6,7 +6,6 @@ OpenDocument formats (.odt, .odp), and RTF files.
 """
 
 from pathlib import Path
-from typing import List
 
 from llama_index.core import Document
 from llama_index.readers.file import DocxReader, PptxReader
@@ -23,7 +22,7 @@ class OfficeLoader:
         self.docx_reader = DocxReader()
         self.pptx_reader = PptxReader()
 
-    def load_data(self, file_path: Path) -> List[Document]:
+    def load_data(self, file_path: Path) -> list[Document]:
         """Load and parse Office document."""
         try:
             file_extension = file_path.suffix.lower()
@@ -54,7 +53,7 @@ class OfficeLoader:
             logger.error(f"Failed to load Office document {file_path}: {e}")
             raise RuntimeError(f"Office document loading failed: {e}")
 
-    def _load_word_document(self, file_path: Path) -> List[Document]:
+    def _load_word_document(self, file_path: Path) -> list[Document]:
         """Load Word/ODT document."""
         try:
             if file_path.suffix.lower() == ".docx":
@@ -66,7 +65,7 @@ class OfficeLoader:
             logger.warning(f"Failed to load Word document with DocxReader: {e}")
             return self._extract_text_content(file_path)
 
-    def _load_presentation(self, file_path: Path) -> List[Document]:
+    def _load_presentation(self, file_path: Path) -> list[Document]:
         """Load PowerPoint/ODP presentation."""
         try:
             if file_path.suffix.lower() == ".pptx":
@@ -78,17 +77,17 @@ class OfficeLoader:
             logger.warning(f"Failed to load presentation with PptxReader: {e}")
             return self._extract_text_content(file_path)
 
-    def _load_rtf_document(self, file_path: Path) -> List[Document]:
+    def _load_rtf_document(self, file_path: Path) -> list[Document]:
         """Load RTF document."""
         # RTF is a complex format, for now we'll try basic text extraction
         return self._extract_text_content(file_path)
 
-    def _extract_text_content(self, file_path: Path) -> List[Document]:
+    def _extract_text_content(self, file_path: Path) -> list[Document]:
         """Fallback text extraction for unsupported Office formats."""
         try:
             # This is a basic fallback - in production you might want
             # to use libraries like python-docx2txt, pypandoc, or textract
-            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            with open(file_path, encoding="utf-8", errors="ignore") as f:
                 content = f.read()
 
             if content.strip():

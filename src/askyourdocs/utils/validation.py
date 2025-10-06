@@ -7,14 +7,14 @@ and security-related checks.
 
 import re
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from ..utils.logging import get_logger
 
 logger = get_logger(__name__)
 
 
-def validate_file_path(file_path: str, must_exist: bool = True) -> Tuple[bool, str]:
+def validate_file_path(file_path: str, must_exist: bool = True) -> tuple[bool, str]:
     """
     Validate file path for security and existence.
 
@@ -45,7 +45,7 @@ def validate_file_path(file_path: str, must_exist: bool = True) -> Tuple[bool, s
         return False, f"Invalid path: {e}"
 
 
-def validate_question(question: str) -> Tuple[bool, str]:
+def validate_question(question: str) -> tuple[bool, str]:
     """
     Validate user question for basic safety and quality.
 
@@ -112,7 +112,7 @@ def sanitize_input(text: str, max_length: int = 1000) -> str:
     return text
 
 
-def validate_file_patterns(patterns: Optional[str]) -> Tuple[bool, List[str], str]:
+def validate_file_patterns(patterns: Optional[str]) -> tuple[bool, list[str], str]:
     """
     Validate and parse file include/exclude patterns.
 
@@ -147,7 +147,7 @@ def validate_file_patterns(patterns: Optional[str]) -> Tuple[bool, List[str], st
         return False, [], f"Invalid pattern format: {e}"
 
 
-def validate_chunk_size(chunk_size: int) -> Tuple[bool, str]:
+def validate_chunk_size(chunk_size: int) -> tuple[bool, str]:
     """
     Validate chunk size parameter.
 
@@ -166,7 +166,7 @@ def validate_chunk_size(chunk_size: int) -> Tuple[bool, str]:
     return True, ""
 
 
-def validate_top_k(top_k: int) -> Tuple[bool, str]:
+def validate_top_k(top_k: int) -> tuple[bool, str]:
     """
     Validate top_k parameter for retrieval.
 
@@ -182,7 +182,7 @@ def validate_top_k(top_k: int) -> Tuple[bool, str]:
     return True, ""
 
 
-def validate_similarity_threshold(threshold: float) -> Tuple[bool, str]:
+def validate_similarity_threshold(threshold: float) -> tuple[bool, str]:
     """
     Validate similarity threshold parameter.
 

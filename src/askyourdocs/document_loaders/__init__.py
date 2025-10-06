@@ -5,8 +5,7 @@ Provides unified interface for loading different document types
 including PDF, Office documents, text files, and code files.
 """
 
-from pathlib import Path
-from typing import Optional, Type
+from typing import Optional
 
 from .code import CodeLoader
 from .office import OfficeLoader
@@ -65,7 +64,7 @@ LOADER_MAPPING = {
 }
 
 
-def get_document_loader(file_extension: str) -> Optional[Type]:
+def get_document_loader(file_extension: str) -> Optional[type]:
     """Get appropriate document loader for file extension."""
     loader_class = LOADER_MAPPING.get(file_extension.lower())
     return loader_class

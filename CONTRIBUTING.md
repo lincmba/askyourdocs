@@ -29,7 +29,7 @@ Thank you for your interest in contributing to AskYourDocs! This document provid
    ```bash
    # Install all dependencies including dev tools
    poetry install --extras "all"
-   
+
    # Run a basic command
     poetry run askyourdocs config show
    ```

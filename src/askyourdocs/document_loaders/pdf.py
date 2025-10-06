@@ -5,7 +5,6 @@ Handles PDF document parsing and text extraction using PyPDF.
 """
 
 from pathlib import Path
-from typing import List
 
 from llama_index.core import Document
 from llama_index.readers.file import PDFReader
@@ -21,7 +20,7 @@ class PDFLoader:
     def __init__(self) -> None:
         self.reader = PDFReader()
 
-    def load_data(self, file_path: Path) -> List[Document]:
+    def load_data(self, file_path: Path) -> list[Document]:
         """Load and parse PDF document."""
         try:
             documents = self.reader.load_data(file_path)

@@ -6,7 +6,7 @@ used throughout the application.
 """
 
 from .logging import get_logger, setup_logging
-from .validation import validate_file_path, validate_question, sanitize_input
+from .validation import sanitize_input, validate_file_path, validate_question
 
 __all__ = [
     "get_logger",

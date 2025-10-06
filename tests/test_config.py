@@ -4,8 +4,6 @@ import tempfile
 from pathlib import Path
 
 import pytest
-import yaml
-
 from askyourdocs.core.config import Config, ConfigManager
 
 
